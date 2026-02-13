@@ -10,7 +10,7 @@ const schema = yup.object().shape({
     examDate: yup.date().required("Exam date is required"),
     subject: yup.array().min(1, "Atleast one subject must be selected").required(),
  })
- const mySubject = ["English","Mathematics","Biology","Chemistry", "Physics"];
+ const mySubject = ["English","Mathematics","Biology","Chemistry", "Physics", "Further Mathematics", "Literature", "Government", "Economics", "Accounting", "Commerce", "Agric Science", "Geography", "History"];
  
 export default function Enroll () {
      const {handleChange, handleSubmit, handleBlur,touched,errors,values,setFieldValue } = useFormik({
@@ -22,9 +22,7 @@ export default function Enroll () {
             subject: [],
         },
         onSubmit:()=>{
-            console.log
-            
-            (`my name is ${values.fullName} and this is my subect ${values.subject}`)
+            console.log(`my name is ${values.fullName} and this is my subect ${values.subject}`)
         }, 
         validationSchema: schema,
 
@@ -97,9 +95,19 @@ export default function Enroll () {
                             />
                           </div>
                           <p className="mt-2 text-gray-600 text-center">Select Subjects</p>
-                          <FormGroup> 
+                          <FormGroup sx={{
+                             display: "grid",
+                             gridTemplateColumns: "1fr 1fr"
+                          }}> 
                             {mySubject.map(subj =>
-                             <FormControlLabel key={subj} control={<Checkbox checked={values.subject.includes(subj)} onChange={()=>handleSubjectChange(subj)}/>}  label={subj} />
+                             <FormControlLabel
+                              key={subj}
+                              control={
+                               <Checkbox 
+                               checked={values.subject.includes(subj)} 
+                               onChange={()=>handleSubjectChange(subj)}/>} 
+                              label={subj} 
+                              />
                              )}
                           </FormGroup>
                           <button type="submit" className="w-full h-9 cursor-pointer rounded bg-blue-500 font-semibold text-white">Enroll</button>

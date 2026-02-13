@@ -27,7 +27,7 @@ export default function Login () {
                     <form 
                     action={async ()=>{
                              "use server"
-                            await signIn();
+                            await signIn('google');
                     }}
                     >
                         <button type="submit" className="w-12 h-12 cursor-pointer flex justify-center items-center rounded-md shadow-lg">
