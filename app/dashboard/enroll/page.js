@@ -3,9 +3,9 @@ import { db } from "@/config/firebase.config";
 import { Card, CardContent, CardHeader, Checkbox, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { addDoc, collection } from "firebase/firestore";
 import { useFormik } from "formik";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import * as yup from "yup";
-
 
 const schema = yup.object().shape({
     fullName: yup.string().required("Full Name is required"),
@@ -17,6 +17,9 @@ const schema = yup.object().shape({
  const mySubject = ["English","Mathematics","Biology","Chemistry", "Physics", "Further Mathematics", "Literature", "Government", "Economics", "Accounting", "Commerce", "Agric Science", "Geography", "History"];
  
 export default function Enroll () {
+    const [loading, setLoading] = useState(false);
+    const {data : session} = useSession();
+    console.log(session);
      const {handleChange, handleSubmit,touched,errors,values,setFieldValue } = useFormik({
         initialValues: {
             fullName: "",
@@ -25,7 +28,28 @@ export default function Enroll () {
             examDate: "",
             subject: [],
         },
-        onSubmit:()=>{}, 
+        onSubmit: async(values, {resetForm})=>{
+              try {
+                   setLoading(true);
+                  await addDoc(collection(db,"enrollments"),{
+                    user: session?.user?.id,
+                    fullName: values.fullName,
+                    phoneNumber: values.phone,
+                    examType: values.examType,
+                    examDate: values.examDate,
+                    selectedSubjects: values.subject,
+                    timecreated: new Date(), 
+                  })
+                  alert("Student enrolled successfully");
+                  resetForm();
+                  setLoading(false);
+              }
+              catch(error) {
+                console.error("Error submitting form:", error);
+                alert("Failed to enroll student. Please try again.");
+                setLoading(false);
+              }
+        }, 
         validationSchema: schema,
 
      });
@@ -118,7 +142,9 @@ export default function Enroll () {
                              )}
                              {touched.subject && errors.subject ? <span className="text-red-500 text-xs">{errors.subject}</span> : null}
                           </FormGroup>
-                          <button type="submit" className="w-full h-9 cursor-pointer rounded bg-blue-500 font-semibold text-white">Enroll</button>
+                          <button type="submit" className="w-full h-9 cursor-pointer rounded bg-blue-500 font-semibold text-white">
+                            {loading ? "Enrolling..." : "Enroll"}
+                            </button>
                        </form>
                  </CardContent>
             </Card>

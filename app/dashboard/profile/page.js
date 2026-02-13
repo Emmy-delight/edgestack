@@ -1,6 +1,9 @@
+import { auth } from "@/auth";
 import Image from "next/image";
 
-export default function Profile () {
+export default async function Profile () {
+    const session = await auth();
+    console.log(session);
     return(
         <main className="min-h-screen flex justify-center py-6 px-2">
             <div className="w-full md:w-90 md:max-h-110 rounded shadow-md py-5 px-4 ">
@@ -17,11 +20,11 @@ export default function Profile () {
                 <div className="px-5 py-5 flex flex-col gap-4 mt-8 w-80 h-60 shadow rounded-md">
                     <div className="flex justify-between items-center">
                         <p className=" font-semibold">Full Name</p>
-                        <p className="text-gray-600 text-xs">Augustine Emmanuel</p>
+                        <p className="text-gray-600 text-xs">{session?.user?.name}</p>
                     </div>
                     <div className="flex justify-between items-center">
                         <p className=" font-semibold"> Email </p>
-                        <p className="text-gray-600 text-xs">augustine2027@gmail.com</p>
+                        <p className="text-gray-600 text-xs">{session?.user?.email}</p>
                     </div>
                     <div className="flex justify-between items-center">
                         <p className=" font-semibold">Phone number</p>
