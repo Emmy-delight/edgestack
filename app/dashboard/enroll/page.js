@@ -1,7 +1,11 @@
  "use client"
+import { db } from "@/config/firebase.config";
 import { Card, CardContent, CardHeader, Checkbox, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { addDoc, collection } from "firebase/firestore";
 import { useFormik } from "formik";
+import { useState } from "react";
 import * as yup from "yup";
+
 
 const schema = yup.object().shape({
     fullName: yup.string().required("Full Name is required"),
@@ -13,7 +17,7 @@ const schema = yup.object().shape({
  const mySubject = ["English","Mathematics","Biology","Chemistry", "Physics", "Further Mathematics", "Literature", "Government", "Economics", "Accounting", "Commerce", "Agric Science", "Geography", "History"];
  
 export default function Enroll () {
-     const {handleChange, handleSubmit, handleBlur,touched,errors,values,setFieldValue } = useFormik({
+     const {handleChange, handleSubmit,touched,errors,values,setFieldValue } = useFormik({
         initialValues: {
             fullName: "",
             phone: "",
@@ -21,9 +25,7 @@ export default function Enroll () {
             examDate: "",
             subject: [],
         },
-        onSubmit:()=>{
-            console.log(`my name is ${values.fullName} and this is my subect ${values.subject}`)
-        }, 
+        onSubmit:()=>{}, 
         validationSchema: schema,
 
      });
@@ -52,6 +54,7 @@ export default function Enroll () {
                                placeholder="Enter Full Name"
                                size="small"
                               />
+                              {touched.fullName && errors.fullName ? <span className="text-red-500 text-xs">{errors.fullName}</span> : null}
                           </div>
                           <div>
                              <TextField
@@ -64,6 +67,7 @@ export default function Enroll () {
                               placeholder="08077....."
                               size="small"
                              />
+                             {touched.phone && errors.phone ? <span className="text-red-500 text-xs">{errors.phone}</span> : null}
                           </div>
                           <FormControl>
                              <InputLabel id="examType-label">Exam Type</InputLabel>
@@ -80,6 +84,7 @@ export default function Enroll () {
                                  <MenuItem value="Waec" >Waec</MenuItem>
                                  <MenuItem value="Neco">Neco</MenuItem>
                              </Select>
+                             {touched.examType && errors.examType ? <span className="text-red-500 text-xs">{errors.examType}</span> : null}
                           </FormControl>
                           <div>
                             <TextField
@@ -93,6 +98,7 @@ export default function Enroll () {
                              size="small"
                              InputLabelProps={{shrink: true}}
                             />
+                            {touched.examDate && errors.examDate ? <span className="text-red-500 text-xs">{errors.examDate}</span> : null}
                           </div>
                           <p className="mt-2 text-gray-600 text-center">Select Subjects</p>
                           <FormGroup sx={{
@@ -108,7 +114,9 @@ export default function Enroll () {
                                onChange={()=>handleSubjectChange(subj)}/>} 
                               label={subj} 
                               />
+                              
                              )}
+                             {touched.subject && errors.subject ? <span className="text-red-500 text-xs">{errors.subject}</span> : null}
                           </FormGroup>
                           <button type="submit" className="w-full h-9 cursor-pointer rounded bg-blue-500 font-semibold text-white">Enroll</button>
                        </form>
