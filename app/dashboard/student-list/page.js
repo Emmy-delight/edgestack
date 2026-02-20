@@ -3,6 +3,7 @@ import { db } from "@/config/firebase.config";
 import { CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LuView } from "react-icons/lu";
 
@@ -11,6 +12,9 @@ export default function StudentList() {
     const [loading, setLoading] = useState(true);
     const {data: session} = useSession();
 
+    if (!session?.user) {
+        redirect("/auth/login")
+    };
      useEffect(()=>{
          const fetchStudents = async () =>{
             try{
@@ -61,7 +65,7 @@ export default function StudentList() {
                     </TableHead>
                     <TableBody>
                         {students.map((student)=> 
-                        <TableRow key={student.id}>
+                        <TableRow sx={{}} onClick={()=>router.push(`/dashboard/student-list/${student.id}`)} key={student.id}>
                             <TableCell>{student.data.fullName} </TableCell>
                             <TableCell>{student.data.phoneNumber} </TableCell>
                             <TableCell>{student.data.examType} </TableCell>
